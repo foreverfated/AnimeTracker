@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <main className="flex-1">
       <div className=''>
-        anime list goes here
+        anime list goes her
       </div>
     </main>
   )
