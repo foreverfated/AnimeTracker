@@ -4,6 +4,8 @@ import { useQuery, gql } from '@apollo/client';
 
 import { useEffect, useState } from 'react';
 
+
+
 const get_anime = gql`query ($id: Int) { # Define which variables will be used in the query (id)
   Media (id: $id, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
     id
@@ -46,85 +48,157 @@ const HomePage = () => {
       perPage: 3
   }
   })
-  useEffect(() => {
-    console.log(data)
-  }, [search])
-  if (data) console.log(data.Page.media)
     return (
-        <div className='w-full h-full p-2 bg-gray-200 flex flex-col items-center justify-center'>
-            <div className=' font-bold'>Search thousands of anime </div>
+        <div className='w-full h-full  flex flex-col items-center justify-center'>
+            <div className=' font-bold text-2xl'>Search thousands of anime </div>
             <div className="mb-3 xl:w-96">
-  <div className="relative mb-4 flex w-full flex-wrap items-stretch">
     <input
       type="search"
-      className="relative m-0 block  w-[300px] flex-auto rounded border border-solid border-neutral-300 px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+      className="relative shadow-2xl m-0 block  w-[600px] flex-auto rounded border border-solid border-neutral-300 px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
       placeholder="...demon slayer"
-      aria-label="Search"
-      aria-describedby="button-addon2"
       value={search}
       onChange={(i) => setSearch(i.target.value)} />
-
-
-    <span
-      className="input-group-text flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200"
-      id="basic-addon2">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        className="h-5 w-5">
-        <path
-          fillRule="evenodd"
-          d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-          clipRule="evenodd" />
-      </svg>
-    </span>
-  </div>
 </div>
-      {search === "" && <Trending /> }
+      {search === "" && <HomePageContent /> }
       {loading && 'loading'}
-      {data && data?.Page?.media.map((anime: any, index: number) => {
-        return (
-          <div key={index} className='w-full h-full p-4 flex justify-between rounded-md border-2 border-gray shadow-md'>
-            <div>{anime.title.english} {anime.title.native}</div>
-            <div className="dropdown dropdown-end">
-              <label tabIndex={0} className="btn m-1">Add to list</label>
-              <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-max ">
-                <li><a>set as Watching</a></li>
-                <li><a>set as Seen</a></li>
-                <li><a>set as planning</a></li>
-              </ul>
+      {data && (
+        <div className='w-full flex flex-col gap-8 p-4'>
+          {data.Page.media.map((anime: any, index: number) => (
+            <div key={index} className='w-full shadow-md h-full p-4 flex justify-between rounded-md bg-gray-200 '>
+              <div>{`${anime.title.english} ${anime.title.native}`}</div>
+              <div className="dropdown dropdown-end">
+                <label tabIndex={0} className="btn m-1">Add to list</label>
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-max ">
+                  <li><a>set as Watching</a></li>
+                  <li><a>set as Seen</a></li>
+                  <li><a>set as planning</a></li>
+                </ul>
+              </div>
             </div>
-            </div>
-        )
-      })}
+          ))}
+        </div>
+      )}
+
       
         </div>
     )
 }
 
+interface IpropsSection {
+  title: string,
+}
 
-const Trending = () => {
-  const {loading, error, data} = useQuery(get_anime, {
-    variables: {id: 15125}
-  })
-    return (
-        <div className="w-full h-full flex-1 flex flex-wrap p-4">
-            {[...Array(10).keys()].map(card => {
+const AnimeSection = ({title}: IpropsSection) => {
+  return (
+    <div className='flex flex-col w-full h-max p-8 '>
+      <div className='text-4xl'>{title}</div>
+      <div className="w-full h-full flex-1 flex flex-wrap">
+            {[...Array(4).keys()].map(card => {
                 return (
-                    <div key={card} className="w-1/3 h-[200px] p-4"><div className='rounded-lg h-full bg-gray-400   flex items-center justify-center'>anime {card}</div></div>
+                    <div key={card} className="w-1/4 h-[400px] p-4"><div className='rounded-lg h-full bg-gray-400   flex items-center shadow-2xl justify-center'>anime {card}</div></div>
                 )
             })}
         </div>
-        
-    )
+    </div>
+  )
+}
 
+interface Itop10anime {
+  rank: number, 
+  animeDetails: string,
+  genre: string, 
+  rating: number, 
+  lastAired: string,
+}
+
+const Top10Anime = ({animeList}: {animeList: Itop10anime[]}) => {
+  return (
+    <div className="overflow-x-auto p-4">
+      <table className="table table-zebra w-full">
+        <thead>
+          <tr>
+            <th>rank</th>
+            <th>anime details</th>
+            <th>genre</th>
+            <th>rating</th>
+            <th>last aired</th>
+          </tr>
+        </thead>
+        <tbody>
+          {animeList.map(({rank, animeDetails, genre, rating, lastAired}) => (
+            <tr key={rank} className='text-2xl'>
+              <th className='p-12'>{rank}</th>
+              <td>{animeDetails}</td>
+              <td>{genre}</td>
+              <td>{rating}</td>
+              <td>{lastAired}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
 
+
+const HomePageContent = () => {
+  const {loading, error, data} = useQuery(get_anime, {
+    variables: {id: 15125}
+  })
+
+  const FakeAnimelist: Itop10anime[] = [
+    {
+      rank: 1,
+      animeDetails: 'Attack on Titan',
+      genre: 'Action, Drama, Fantasy',
+      rating: 9.0,
+      lastAired: '2022-03-28',
+    },
+    {
+      rank: 2,
+      animeDetails: 'Fullmetal Alchemist: Brotherhood',
+      genre: 'Action, Adventure, Drama',
+      rating: 9.1,
+      lastAired: '2010-07-04',
+    },
+    {
+      rank: 3,
+      animeDetails: 'Death Note',
+      genre: 'Mystery, Psychological, Supernatural',
+      rating: 8.6,
+      lastAired: '2007-06-27',
+    },
+    {
+      rank: 4,
+      animeDetails: 'One Punch Man',
+      genre: 'Action, Comedy, Parody',
+      rating: 8.0,
+      lastAired: '2019-07-02',
+    },
+    {
+      rank: 5,
+      animeDetails: 'Naruto',
+      genre: 'Action, Adventure, Martial Arts',
+      rating: 8.2,
+      lastAired: '2007-02-08',
+    },
+  ];
+  
+    return (
+      <div className='w-full h-full'>
+        
+      <AnimeSection title={"Trending"} />
+      <AnimeSection title={"Popular this season"} />
+      <AnimeSection title={"All Time popular"} />
+      <Top10Anime animeList={FakeAnimelist} />
+        </div>
+    )
+}
+
 export default function Home() {
   return (
-    <main className="flex-1 h-full w-full flex flex-col">
+    <main className="flex-1 h-full w-full">
         <HomePage />
     </main>
   )

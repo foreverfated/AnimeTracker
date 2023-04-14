@@ -17,7 +17,7 @@ const client = new ApolloClient({
 
 function Header() {
     return (
-        <div className="w-screen h-max p-6 bg-blue-200 flex justify-between">
+        <div className="w-full h-max p-6 bg-blue-200 flex justify-between">
             <div className="text-5xl">Anime tracker</div>
             <div>
             <div
@@ -143,12 +143,12 @@ export default function RootLayout({
       <body>
         <div className=''>
         <Header />
-        <div className='w-screen flex flex-col md:flex-row'>
+        <div className='flex flex-col md:flex-row h-full'>
             <Sidebar />
             <ApolloProvider client={client}>
             {children}</ApolloProvider>
         </div>
-        <Footer />
+        {/* <Footer /> */}
         </div></body>
         
     </html>
