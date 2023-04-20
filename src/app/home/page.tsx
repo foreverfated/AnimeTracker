@@ -72,7 +72,7 @@ const HomePage = () => {
     getuseranime()
   }
 
-  const [animelist, setAnimelist] = useState([])
+  const [animelist, setAnimelist] = useState<any>([])
 
   useEffect(() => {
     getuseranime()
