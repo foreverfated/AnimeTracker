@@ -55,10 +55,11 @@ const HomePage = () => {
     setAnimelist(animelist)
   }
 
-  const addAnimeToList = async (status: string, anime: string)  => {
+  const addAnimeToList = async (status: string, id: number, anime: string)  => {
     const data = {
       status: status, 
       anime: anime,
+      id: id,
     }
     const res = await fetch('/api/hello', {
       method: "POST",
@@ -68,8 +69,6 @@ const HomePage = () => {
       },
       body: JSON.stringify(data)
     })
-    const response = await res.json()
-    console.log('response from post:', response)
     getuseranime()
   }
 
@@ -97,12 +96,12 @@ const HomePage = () => {
           {data.Page.media.map((anime: any, index: number) => (
             <div key={index} className='w-full shadow-md h-full p-4 flex justify-between rounded-md bg-gray-200 '>
               <div>{`${anime.title.english} ${anime.title.native}`}</div>
-              {animelist?.watching?.includes(anime.title.english) ? 'currently watching' : <div className="dropdown dropdown-end">
+              {animelist?.watching?.includes(anime.id) || animelist?.watched?.includes(anime.id) || animelist?.planning?.includes(anime.id) ? `currently ${animelist?.planning?.includes(anime.id) ? 'planned' : animelist?.watched?.includes(anime.id) ? 'completed': 'watching'}` : <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn m-1">Add to list</label>
                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-max ">
-                  <li onClick={() => addAnimeToList('watching', anime.title.english)}><a>set as Watching</a></li>
-                  <li onClick={() => addAnimeToList('seen', anime.title.english)}><a>set as Seen</a></li>
-                  <li onClick={() => addAnimeToList('planning', anime.title.english)}><a>set as planning</a></li>
+                  <li onClick={() => addAnimeToList('watching', anime.id, anime.title.english ? anime.title.english : anime.title.native )}><a>set as Watching</a></li>
+                  <li onClick={() => addAnimeToList('seen', anime.id, anime.title.english ? anime.title.english : anime.title.native)}><a>set as Seen</a></li>
+                  <li onClick={() => addAnimeToList('planning', anime.id, anime.title.english ? anime.title.english : anime.title.native)}><a>set as planning</a></li>
                 </ul>
               </div>}
             </div>

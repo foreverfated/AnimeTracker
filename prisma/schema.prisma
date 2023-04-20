@@ -10,10 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model user {
   id         Int      @id @default(autoincrement())
   name       String
-  watching   String[]
-  watched    String[]
-  planning   String[]
+  watching   Int[]
+  watched    Int[]
+  planning   Int[]
 }
+

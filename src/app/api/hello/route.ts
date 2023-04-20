@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   //   },
   // });
   // const product = await res.json();
-    const anime = await prisma.User.findUnique({
+    const anime = await prisma.user.findUnique({
       where: {
         id: 1
       }
@@ -27,19 +27,19 @@ export async function POST(request: Request) {
   const data = body.status === 'watching' ?
    {
     watching: {
-      push: body.anime,
+      push: body.id,
     }
   } : body.status === 'seen' ? 
   {
     watched: {
-      push: body.anime,
+      push: body.id,
     }
   } : {
     planning: {
-      push: body.anime,
+      push: body.id,
     }
   }
-  const addAnime = await prisma.User.update({
+  const addAnime = await prisma.user.update({
     where: {
       id: 1,
     },

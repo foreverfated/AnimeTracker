@@ -4,19 +4,49 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { useEffect, useState } from 'react';
 import prisma from '@/lib/prisma';
+import { useQuery, gql } from '@apollo/client';
 
+var getanime = gql`
+query ($id: Int) { # Define which variables will be used in the query (id)
+  Media (id: $id, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
+    id
+    title {
+      romaji
+      english
+      native
+    }
+  }
+}
+`;
+
+var variables = {
+  id: 15125
+};
 
 
 export default function Home() {
   const [animelist, setAnimelist] = useState()
+  const [animeIds, setAnimeIds] = useState([])
+  const {loading, error, data} = useQuery(getanime, {
+    variables: variables,
+  })
+  if (data) console.log(data)
   useEffect(() => {
     const fetchAnime = async () => {
-    const res = await fetch('/api/hello')
-    const animelist = await res.json()
-    setAnimelist(animelist)}
+      const res = await fetch('/api/hello')
+      const animelist = await res.json()
+
+      console.log(animelist)
+      setAnimelist(animelist)
+      setAnimeIds(animelist)
+    }
 
     fetchAnime();
   }, [])
+
+  const handleDeleteAnime = () => {
+    console.log('deteled anime')
+  }
   return (
     <main className="flex-1">
       <div className=''>
@@ -30,6 +60,7 @@ export default function Home() {
               return (
                 <div key={index} className='w-full shadow-md h-full p-4 flex justify-between rounded-md bg-gray-200 '>
                   <div> {anime}</div>
+                  <div onClick={() => handleDeleteAnime()}>delete</div>
                   
                 </div>
               )
@@ -39,6 +70,7 @@ export default function Home() {
               return (
                 <div key={index} className='w-full shadow-md h-full p-4 flex justify-between rounded-md bg-gray-200 '>
                   <div> {anime}</div>
+                  <div onClick={() => handleDeleteAnime()}>delete</div>
                 </div>
               )
             }) : 'None planning to watch '}
@@ -48,6 +80,7 @@ export default function Home() {
               return (
                 <div key={index} className='w-full shadow-md h-full p-4 flex justify-between rounded-md bg-gray-200 '>
                   <div> {anime}</div>
+                  <div onClick={() => handleDeleteAnime()}>delete</div>
                 </div>
               )
             }) : 'None seen '}
