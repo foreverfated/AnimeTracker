@@ -25,8 +25,8 @@ var variables = {
 
 
 export default function Home() {
-  const [animelist, setAnimelist] = useState()
-  const [animeIds, setAnimeIds] = useState([])
+  const [animelist, setAnimelist] = useState<any>([])
+  const [animeIds, setAnimeIds] = useState<any>([])
   const {loading, error, data} = useQuery(getanime, {
     variables: variables,
   })
@@ -56,7 +56,7 @@ export default function Home() {
         <div className='p-8 flex flex-col space-y-4'>
           <div>Watching: </div>
           <div className='space-y-4'>
-            {animelist?.watching.length > 0 ? animelist?.watching.map((anime, index) => {
+            {animelist?.watching?.length > 0 ? animelist?.watching?.map((anime, index) => {
               return (
                 <div key={index} className='w-full shadow-md h-full p-4 flex justify-between rounded-md bg-gray-200 '>
                   <div> {anime}</div>
@@ -66,7 +66,7 @@ export default function Home() {
               )
             }) : 'None watching'}</div>
             <div>Planning to watch: </div>
-            {animelist?.planning.length > 0 ? animelist?.planning.map((anime, index) => {
+            {animelist?.planning?.length > 0 ? animelist?.planning?.map((anime, index) => {
               return (
                 <div key={index} className='w-full shadow-md h-full p-4 flex justify-between rounded-md bg-gray-200 '>
                   <div> {anime}</div>
@@ -76,7 +76,7 @@ export default function Home() {
             }) : 'None planning to watch '}
 
             <div>Seen:  </div>
-            {animelist?.watched.length > 0 ? animelist?.watched.map((anime, index) => {
+            {animelist?.watched?.length > 0 ? animelist?.watched?.map((anime, index) => {
               return (
                 <div key={index} className='w-full shadow-md h-full p-4 flex justify-between rounded-md bg-gray-200 '>
                   <div> {anime}</div>
